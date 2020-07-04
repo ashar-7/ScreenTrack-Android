@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorSurface">#212121</color>
+    <color name="colorBackground">#121212</color>
+
+    <color name="toolbarTitleColor">@color/material_on_surface_emphasis_high_type</color>
+</resources>

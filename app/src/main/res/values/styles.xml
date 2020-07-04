@@ -1,0 +1,39 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="colorSurface">@color/colorSurface</item>
+        <item name="android:colorBackground">@color/colorBackground</item>
+    </style>
+
+    <style name="TabLayout" parent="Widget.MaterialComponents.TabLayout">
+        <item name="android:elevation">4dp</item>
+        <item name="android:background">@drawable/tab_background</item>
+        <item name="tabTextAppearance">@style/TextAppearance.TabLayout</item>
+        <item name="tabTextColor">@color/colorPrimary</item>
+        <item name="tabSelectedTextColor">@android:color/white</item>
+        <item name="tabIndicatorColor">@color/colorPrimary</item>
+        <item name="tabIndicator">@drawable/tab_indicator</item>
+        <item name="tabIndicatorGravity">stretch</item>
+    </style>
+
+    <style name="TextAppearance.TabLayout" parent="TextAppearance.AppCompat.Button">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="TextAppearance.AppsList" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textColor">@color/material_on_surface_emphasis_high_type</item>
+    </style>
+
+    <style name="TextAppearance.AppsList.Title">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="TextAppearance.AppsList.Subtitle">
+        <item name="android:textSize">12sp</item>
+    </style>
+</resources>
