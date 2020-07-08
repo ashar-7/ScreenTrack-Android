@@ -1,18 +1,25 @@
 package com.se7en.screentrack.models
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.ForeignKey
+import org.threeten.bp.ZonedDateTime
 
-@Entity
+@Entity(
+    primaryKeys = ["packageName", "dayId"],
+    foreignKeys = [
+        ForeignKey(
+            entity = Day::class,
+            parentColumns = ["date"],
+            childColumns = ["dayId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
 data class DayStats(
-    @PrimaryKey val dateStartMillis: Long, // refers to 12 AM (or whatever start of day is at a zone)
-    val appId: String, // app package name
-    var totalTimeMillis: Long,
-    var lastUsedMillis: Long
-) {
-    fun setData(totalTime: Long, lastUsed: Long): DayStats {
-        totalTimeMillis = totalTime
-        lastUsedMillis = lastUsed
-        return this
-    }
-}
+    val packageName: String,
+    val totalTime: Long,
+    val lastUsed: Long,
+    @ColumnInfo(index = true)
+    val dayId: ZonedDateTime
+)

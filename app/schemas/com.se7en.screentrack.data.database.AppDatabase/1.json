@@ -2,22 +2,16 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "ddebfd3e1805ffaeefd938e75788407c",
+    "identityHash": "14bf3ffa185b2b65b3abbe5c5b1df23c",
     "entities": [
       {
-        "tableName": "UsageData",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`filter` INTEGER NOT NULL, `usageStats` TEXT NOT NULL, `lastUpdated` INTEGER NOT NULL, PRIMARY KEY(`filter`))",
+        "tableName": "Day",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`date` INTEGER NOT NULL, `lastUpdated` INTEGER NOT NULL, PRIMARY KEY(`date`))",
         "fields": [
           {
-            "fieldPath": "filter",
-            "columnName": "filter",
+            "fieldPath": "date",
+            "columnName": "date",
             "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "usageStats",
-            "columnName": "usageStats",
-            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -29,18 +23,78 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "filter"
+            "date"
           ],
           "autoGenerate": false
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "DayStats",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`packageName` TEXT NOT NULL, `totalTime` INTEGER NOT NULL, `lastUsed` INTEGER NOT NULL, `dayId` INTEGER NOT NULL, PRIMARY KEY(`packageName`, `dayId`), FOREIGN KEY(`dayId`) REFERENCES `Day`(`date`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "packageName",
+            "columnName": "packageName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalTime",
+            "columnName": "totalTime",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastUsed",
+            "columnName": "lastUsed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dayId",
+            "columnName": "dayId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "packageName",
+            "dayId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_DayStats_dayId",
+            "unique": false,
+            "columnNames": [
+              "dayId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_DayStats_dayId` ON `${TABLE_NAME}` (`dayId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Day",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "dayId"
+            ],
+            "referencedColumns": [
+              "date"
+            ]
+          }
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ddebfd3e1805ffaeefd938e75788407c')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '14bf3ffa185b2b65b3abbe5c5b1df23c')"
     ]
   }
 }

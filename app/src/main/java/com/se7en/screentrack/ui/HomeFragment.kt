@@ -2,24 +2,19 @@ package com.se7en.screentrack.ui
 
 import android.app.usage.UsageStatsManager
 import android.content.Context
-import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
-import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import com.google.android.material.tabs.TabLayout
 import com.se7en.screentrack.R
-import com.se7en.screentrack.Utils
 import com.se7en.screentrack.adapters.AppsUsageAdapter
 import com.se7en.screentrack.data.AppUsageManager
 import com.se7en.screentrack.data.database.AppDatabase
@@ -52,7 +47,7 @@ class HomeFragment: Fragment() {
                                 it.applicationContext,
                                 AppDatabase::class.java,
                                 "app-database"
-                            ).build().usageDao(),
+                            ).build(),
                             appUsageManager
                         ) as T
                     }
@@ -93,10 +88,11 @@ class HomeFragment: Fragment() {
 
     private fun setupViewModelObservers() {
         viewModel.usageStatsLiveData.observe(viewLifecycleOwner, Observer { usageData ->
-            usageAdapter.submitList(usageData.usageStats)
-            lastUpdated.text = Utils.getUsageTimeString(
-                System.currentTimeMillis() - usageData.lastUpdated
-            )
+            Log.d("HomeFragment", usageData.toString())
+            usageAdapter.submitList(usageData.usageList)
+//            lastUpdated.text = Utils.getUsageTimeString(
+//                System.currentTimeMillis() - usageData.totalStats[0]
+//            )
         })
     }
 

@@ -1,36 +1,66 @@
 package com.se7en.screentrack.data.database
 
+import android.util.Log
 import androidx.room.*
-import com.se7en.screentrack.models.App
-import com.se7en.screentrack.models.AppsWithDayStatsAndSessions
-import com.se7en.screentrack.models.Session
+import com.se7en.screentrack.models.DayWithDayStats
+import com.se7en.screentrack.models.DayStats
+import com.se7en.screentrack.models.Day
+import kotlinx.coroutines.flow.Flow
+import org.threeten.bp.ZonedDateTime
 
 @Dao
-interface StatsDao {
+abstract class StatsDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(vararg apps: App)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract suspend fun insert(day: Day): Long
 
-//    @Insert(onConflict = OnConflictStrategy.REPLACE)
-//    suspend fun insert(vararg dayStats: DayStats)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract suspend fun insert(dayStats: DayStats): Long
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(vararg sessions: Session)
+    @Update(onConflict = OnConflictStrategy.IGNORE)
+    abstract suspend fun update(day: Day)
+
+    @Update(onConflict = OnConflictStrategy.IGNORE)
+    abstract suspend fun update(dayStats: DayStats)
 
     @Transaction
-    suspend fun insert(app: App, sessions: List<Session>) { //dayStats: List<DayStats>,
-        insert(app)
+    open suspend fun upsert(dayWithDayStats: List<DayWithDayStats>) {
+        dayWithDayStats.forEach {
+            if(insert(it.day) == (-1).toLong()) {
+                update(it.day)
+            }
 
-//        for(stats in dayStats) {
-//            insert(stats)
-//        }
-
-        for(session in sessions) {
-            insert(session)
+            it.dayStats.forEach { stats ->
+                if(insert(stats) == (-1).toLong()) {
+                    update(stats)
+                }
+            }
         }
     }
 
-//    @Transaction
-//    @Query("SELECT * FROM App")
-//    suspend fun getAppsWithDayStatsAndSessions(): List<AppsWithDayStatsAndSessions>
+    @Delete
+    abstract suspend fun delete(day: Day)
+
+    @Delete
+    abstract suspend fun delete(vararg dayStats: DayStats)
+
+    @Transaction
+    @Delete
+    open suspend fun delete(daysWithDayStats: List<DayWithDayStats>) {
+        daysWithDayStats.forEach {
+            delete(it.day)
+        }
+    }
+
+    @Transaction
+    @Query("SELECT * FROM Day")
+    abstract fun getDaysWithDayStats(): Flow<List<DayWithDayStats>?>
+
+    @Transaction
+    @Query("SELECT * FROM Day WHERE date IS NOT :exceptDate")
+    abstract suspend fun getDaysWithDayStats(exceptDate: ZonedDateTime): List<DayWithDayStats>
+
+    @Transaction
+    @Query("SELECT * FROM Day WHERE date IS :date")
+    abstract fun getDayWithDayStats(date: ZonedDateTime): Flow<DayWithDayStats?>
 }

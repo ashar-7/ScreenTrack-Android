@@ -1,13 +1,22 @@
 package com.se7en.screentrack
 
-import android.content.Context
 import org.threeten.bp.Duration
+import org.threeten.bp.Instant
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.temporal.ChronoUnit
 
 object Utils {
 
-    fun dpToPx(context: Context, dp: Int): Int {
-        return (dp * context.resources.displayMetrics.density).toInt()
-    }
+    fun getZonedDateTime(millis: Long): ZonedDateTime =
+        Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault())
+
+
+    fun getZonedDateTime(millis: Long, truncatedTo: ChronoUnit): ZonedDateTime =
+        Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).truncatedTo(truncatedTo)
+
+    fun getStartOfDayMillis(date: ZonedDateTime) =
+        date.toLocalDate().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
     fun getUsageTimeString(millis: Long): String {
         var timeLeft = Duration.ofMillis(millis)

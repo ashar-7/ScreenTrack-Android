@@ -3,13 +3,15 @@ package com.se7en.screentrack.data
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
 import android.content.Context
-import android.content.pm.PackageManager
 import android.util.Log
 import com.se7en.screentrack.Utils
-import com.se7en.screentrack.models.AppStatsModel
-import com.se7en.screentrack.models.UsageData
+import com.se7en.screentrack.models.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.temporal.ChronoUnit
+import kotlin.math.max
 
 
 class AppUsageManager(
@@ -19,91 +21,97 @@ class AppUsageManager(
 
     enum class FILTER { TODAY, LAST_7_DAYS }
 
-    // use this if no usageData present in database
-    fun getUsageData(filter: FILTER): UsageData {
-        val pair = getUsageStatsByFilter(filter)
-        val lastUpdatedMillis = pair.first
-        val usageStats = pair.second
+    suspend fun getUsageList(dayWithStats: DayWithDayStats): List<AppUsage> {
+        return withContext(Dispatchers.Default) {
+            val usageList = arrayListOf<AppUsage>()
 
-        return UsageData(
-            filter,
-            usageStats.sortedByDescending { it.totalTimeMillis },
-            lastUpdatedMillis
-        )
+            dayWithStats.dayStats.forEach {
+                val app = App.fromContext(context, it.packageName)
+                usageList.add(
+                    AppUsage(
+                        app,
+                        it.totalTime,
+                        it.lastUsed
+                    )
+                )
+            }
+
+            return@withContext usageList.sortedByDescending { it.totalTime }
+        }
     }
 
-    // use this if usageData is available
-    fun getUsageData(oldUsageData: UsageData): UsageData {
-        // handle cases if last updated is older than 24 hours or 7 days (getUsageData(usageData.filter))
-        // add data somehow
+    suspend fun getUsageList(daysWithStats: List<DayWithDayStats>): List<AppUsage> {
+        return withContext(Dispatchers.Default) {
+            val statsMap = mutableMapOf<String, AppUsage>()
 
-        val now = ZonedDateTime.now(ZoneId.systemDefault())
-        val pair = getUsageStats(oldUsageData.lastUpdated, now.toInstant().toEpochMilli())
-        val lastUpdatedMillis = pair.first
-        val newUsageStats = pair.second
-
-        val updatedStats = mutableMapOf<String, AppStatsModel>()
-
-        // old usage stats
-        oldUsageData.usageStats.forEach {
-            it.setDrawableIfNull(context)
-            updatedStats[it.packageName] = it
-        }
-
-        // new usage stats
-        newUsageStats.forEach { newStats ->
-            val oldStats = updatedStats[newStats.packageName]
-            updatedStats[newStats.packageName] = when {
-                oldStats != null -> {
-                    // found in old stats
-                    val lastUsed = newStats.lastUsedMillis
-                    val totalTime = oldStats.totalTimeMillis + newStats.totalTimeMillis
-
-                    AppStatsModel.fromContext(
-                        context,
-                        oldStats.packageName,
-                        totalTime,
-                        lastUsed
-                    )
-                }
-                else -> {
-                    // new package (not found in old stats)
-                    newStats.setDrawableIfNull(context)
-                    newStats
+            daysWithStats.forEach {
+                for (stats in it.dayStats) {
+                    (statsMap[stats.packageName] ?: AppUsage(
+                        App.fromContext(context, stats.packageName), 0L, 0L
+                    )).let { usage ->
+                        usage.totalTime += stats.totalTime
+                        usage.lastUsed = max(stats.lastUsed, usage.lastUsed)
+                        statsMap[stats.packageName] = usage
+                    }
                 }
             }
-        }
 
-        return UsageData(
-            oldUsageData.filter,
-            updatedStats.values.sortedByDescending { it.totalTimeMillis },
-            lastUpdatedMillis
-        )
+            return@withContext statsMap.values.sortedByDescending { it.totalTime }
+        }
     }
 
-    private fun getUsageStatsByFilter(filter: FILTER): Pair<Long, List<AppStatsModel>> {
-        val now = ZonedDateTime.now(ZoneId.systemDefault())
+//    suspend fun getUsageData(filter: FILTER): UsageData {
+//        val usageList: List<AppUsage>
+//        usageList = when(filter) {
+//            FILTER.TODAY -> {
+//                val dayWithStats = getDayWithStats()
+//                getUsageList(dayWithStats)
+//            }
+//
+//            FILTER.LAST_7_DAYS -> {
+//                val daysWithStats = getDayWithStatsForWeek()
+//                getUsageList(daysWithStats)
+//            }
+//        }
+//
+//        return UsageData(
+//            filter,
+//            usageList
+//        )
+//    }
 
-        val timeStart = when(filter) {
-            FILTER.TODAY -> now.toLocalDate().atStartOfDay(ZoneId.systemDefault())
-            FILTER.LAST_7_DAYS -> now.toLocalDate().minusDays(7).atStartOfDay(ZoneId.systemDefault())
+    suspend fun getDayWithStatsForWeek(): List<DayWithDayStats> {
+        return withContext(Dispatchers.IO) {
+            val now = ZonedDateTime.now(ZoneId.systemDefault())
+            val nowLocalDate = now.toLocalDate()
+            val appsWithDayStats = arrayListOf<DayWithDayStats>()
+
+            for (i in 0..6) {
+                val date =
+                    nowLocalDate.minusDays(i.toLong()).atStartOfDay(ZoneId.systemDefault())
+
+                appsWithDayStats.add(getDayWithStats(date))
+            }
+
+            return@withContext appsWithDayStats
         }
-
-        val timeStartMillis = timeStart.toInstant().toEpochMilli()
-        val timeEndMillis = now.toInstant().toEpochMilli()
-
-        return getUsageStats(timeStartMillis, timeEndMillis)
     }
 
-    private fun getUsageStats(
-        timeStartMillis: Long,
-        timeEndMillis: Long
-    ): Pair<Long, List<AppStatsModel>> {
-        val usageStats = arrayListOf<AppStatsModel>()
-        if(usageStatsManager != null) {
+    private fun getDayWithStats(
+        date: ZonedDateTime = ZonedDateTime.now(ZoneId.systemDefault())
+    ): DayWithDayStats {
+        val statsList = arrayListOf<DayStats>()
+
+        val timeStartMillis = Utils.getStartOfDayMillis(date)
+        val todayDate = ZonedDateTime.now(ZoneId.systemDefault()).truncatedTo(ChronoUnit.DAYS)
+        val timeEndMillis = if (date.truncatedTo(ChronoUnit.DAYS).isEqual(todayDate)) {
+            System.currentTimeMillis()
+        } else Utils.getStartOfDayMillis(date.plusDays(1))
+
+        if (usageStatsManager != null) {
             val eventsMap = mutableMapOf<String, MutableList<UsageEvents.Event>>()
             val events = usageStatsManager.queryEvents(timeStartMillis, timeEndMillis)
-            while(events.hasNextEvent()) {
+            while (events.hasNextEvent()) {
                 val event = UsageEvents.Event()
                 events.getNextEvent(event)
                 val packageName = event.packageName
@@ -118,8 +126,8 @@ class AppUsageManager(
                 val pm = context.packageManager
 
                 try {
-                    val appInfo = pm.getApplicationInfo(packageName, PackageManager.GET_META_DATA)
                     if (pm.getLaunchIntentForPackage(packageName) != null) {
+//                        val sessions = arrayListOf<Session>()
                         var startTime = 0L
                         var endTime = 0L
                         var totalTime = 0L
@@ -145,6 +153,16 @@ class AppUsageManager(
                             // If both start and end times exist, add the time to totalTime
                             // and reset start and end times
                             if (startTime != 0L && endTime != 0L) {
+                                // we have a session
+//                                val session = Session(
+//                                    UUID.randomUUID().toString(),
+//                                    startTime,
+//                                    endTime,
+//                                    packageName
+//                                )
+//
+//                                sessions.add(session)
+
                                 totalTime += endTime - startTime
                                 startTime = 0L; endTime = 0L
                             }
@@ -153,26 +171,31 @@ class AppUsageManager(
                         // If the end time was not found, it's likely that the app is still running
                         // so assume the end time to be now
                         if (startTime != 0L && endTime == 0L) {
+                            // we have a session
+//                            val session = Session(
+//                                UUID.randomUUID().toString(),
+//                                startTime,
+//                                endTime,
+//                                packageName
+//                            )
+//
+//                            sessions.add(session)
+
                             lastUsed = timeEndMillis
-                            totalTime += lastUsed - startTime - 1000
+                            totalTime += lastUsed - startTime
                         }
 
                         // If total time is more than 1 second
                         if (totalTime >= 1000) {
                             try {
-                                val appIcon = pm.getApplicationIcon(appInfo)
-                                val appName = pm.getApplicationLabel(appInfo)
+                                val stats = DayStats(
+                                    packageName,
+                                    totalTime,
+                                    lastUsed,
+                                    date
+                                )
 
-                                val appUsageData =
-                                    AppStatsModel(
-                                        packageName,
-                                        totalTime,
-                                        lastUsed,
-                                        appName.toString(),
-                                        Utils.getUsageTimeString(totalTime),
-                                        appIcon
-                                    )
-                                usageStats.add(appUsageData)
+                                statsList.add(stats)
                             } catch (e: Exception) {
                                 Log.d("AppUsageManager", "Failed to get info for $packageName")
                             }
@@ -185,6 +208,11 @@ class AppUsageManager(
             }
         }
 
-        return Pair(timeEndMillis, usageStats)
+        return DayWithDayStats(
+            Day(
+                date, System.currentTimeMillis()
+            ),
+            statsList
+        )
     }
 }

@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity
 class Session(
     @PrimaryKey val sessionId: String,
-    val startMillis: Long,
-    val endMillis: Long,
+    var startMillis: Long,
+    var endMillis: Long,
     val appId: String
 )

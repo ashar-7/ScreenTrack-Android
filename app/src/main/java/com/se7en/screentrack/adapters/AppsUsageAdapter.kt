@@ -6,14 +6,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.se7en.screentrack.models.AppStatsModel
 import com.se7en.screentrack.R
+import com.se7en.screentrack.Utils
+import com.se7en.screentrack.models.AppUsage
 import kotlinx.android.synthetic.main.usage_rv_item.view.*
 
 class AppsUsageAdapter(
     val listChangedListener: () -> Unit
 ):
-    ListAdapter<AppStatsModel, AppsUsageAdapter.ViewHolder>(UsageDiffUtil()) {
+    ListAdapter<AppUsage, AppsUsageAdapter.ViewHolder>(UsageDiffUtil()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -27,8 +28,8 @@ class AppsUsageAdapter(
     }
 
     override fun onCurrentListChanged(
-        previousList: MutableList<AppStatsModel>,
-        currentList: MutableList<AppStatsModel>
+        previousList: MutableList<AppUsage>,
+        currentList: MutableList<AppUsage>
     ) {
         super.onCurrentListChanged(previousList, currentList)
 
@@ -36,21 +37,21 @@ class AppsUsageAdapter(
     }
 
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        fun bind(item: AppStatsModel) {
-            itemView.totalUsageTime.text = item.totalTimeString
-            itemView.appIcon.setImageDrawable(item.iconDrawable)
-            itemView.appName.text = item.appName
+        fun bind(item: AppUsage) {
+            itemView.totalUsageTime.text = Utils.getUsageTimeString(item.totalTime)
+            itemView.appIcon.setImageDrawable(item.app.iconDrawable)
+            itemView.appName.text = item.app.appName
         }
     }
 
-    class UsageDiffUtil: DiffUtil.ItemCallback<AppStatsModel>() {
-        override fun areItemsTheSame(oldItem: AppStatsModel, newItem: AppStatsModel): Boolean {
-            return oldItem.packageName == newItem.packageName
+    class UsageDiffUtil: DiffUtil.ItemCallback<AppUsage>() {
+        override fun areItemsTheSame(oldItem: AppUsage, newItem: AppUsage): Boolean {
+            return oldItem.app.packageName == newItem.app.packageName
         }
 
-        override fun areContentsTheSame(oldItem: AppStatsModel, newItem: AppStatsModel): Boolean {
-            return (oldItem.lastUsedMillis == newItem.lastUsedMillis
-                    && oldItem.totalTimeMillis == newItem.totalTimeMillis)
+        override fun areContentsTheSame(oldItem: AppUsage, newItem: AppUsage): Boolean {
+            return (oldItem.app.packageName == newItem.app.packageName
+                    && oldItem.totalTime == newItem.totalTime)
         }
     }
 }
