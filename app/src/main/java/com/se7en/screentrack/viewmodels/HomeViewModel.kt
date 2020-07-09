@@ -23,7 +23,7 @@ class HomeViewModel(
     private fun getUsageData(filter: AppUsageManager.FILTER) =
         when(filter) {
             AppUsageManager.FILTER.TODAY -> repository.todayUsageData
-            AppUsageManager.FILTER.LAST_7_DAYS -> repository.last7DaysUsageData
+            AppUsageManager.FILTER.THIS_WEEK -> repository.last7DaysUsageData
         }
 
     init {

@@ -19,7 +19,7 @@ class AppUsageManager(
     private val usageStatsManager: UsageStatsManager?
 ) {
 
-    enum class FILTER { TODAY, LAST_7_DAYS }
+    enum class FILTER { TODAY, THIS_WEEK }
 
     suspend fun getUsageList(dayWithStats: DayWithDayStats): List<AppUsage> {
         return withContext(Dispatchers.Default) {
@@ -59,26 +59,6 @@ class AppUsageManager(
             return@withContext statsMap.values.sortedByDescending { it.totalTime }
         }
     }
-
-//    suspend fun getUsageData(filter: FILTER): UsageData {
-//        val usageList: List<AppUsage>
-//        usageList = when(filter) {
-//            FILTER.TODAY -> {
-//                val dayWithStats = getDayWithStats()
-//                getUsageList(dayWithStats)
-//            }
-//
-//            FILTER.LAST_7_DAYS -> {
-//                val daysWithStats = getDayWithStatsForWeek()
-//                getUsageList(daysWithStats)
-//            }
-//        }
-//
-//        return UsageData(
-//            filter,
-//            usageList
-//        )
-//    }
 
     suspend fun getDayWithStatsForWeek(): List<DayWithDayStats> {
         return withContext(Dispatchers.IO) {

@@ -8,6 +8,13 @@
 
         <item name="colorSurface">@color/colorSurface</item>
         <item name="android:colorBackground">@color/colorBackground</item>
+
+        <item name="android:navigationBarColor">@color/navBarColor</item>
+    </style>
+
+    <style name="Surface">
+        <item name="android:background">@color/colorSurface</item>
+        <item name="android:elevation">4dp</item>
     </style>
 
     <style name="TabLayout" parent="Widget.MaterialComponents.TabLayout">

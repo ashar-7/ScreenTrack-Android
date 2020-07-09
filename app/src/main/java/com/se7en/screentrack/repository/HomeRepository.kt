@@ -1,21 +1,12 @@
 package com.se7en.screentrack.repository
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asLiveData
 import com.se7en.screentrack.Utils
 import com.se7en.screentrack.data.AppUsageManager
 import com.se7en.screentrack.data.database.AppDatabase
-import com.se7en.screentrack.models.DayWithDayStats
 import com.se7en.screentrack.models.UsageData
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.threeten.bp.ZoneId
-import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.temporal.ChronoUnit
 
 class HomeRepository private constructor(
@@ -55,7 +46,7 @@ class HomeRepository private constructor(
             }
 
             UsageData(
-                AppUsageManager.FILTER.LAST_7_DAYS,
+                AppUsageManager.FILTER.THIS_WEEK,
                 appUsageManager.getUsageList(it)
             )
         }.collect {

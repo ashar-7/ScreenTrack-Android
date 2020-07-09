@@ -63,4 +63,7 @@ abstract class StatsDao {
     @Transaction
     @Query("SELECT * FROM Day WHERE date IS :date")
     abstract fun getDayWithDayStats(date: ZonedDateTime): Flow<DayWithDayStats?>
+
+    @Query("SELECT * FROM DayStats WHERE packageName IS :packageName")
+    abstract fun getDayStats(packageName: String): Flow<List<DayStats>>
 }

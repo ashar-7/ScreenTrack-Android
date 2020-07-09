@@ -25,7 +25,7 @@
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/last_7_days"/>
+            android:text="@string/this_week"/>
 
     </com.google.android.material.tabs.TabLayout>
 
@@ -39,15 +39,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/timeFilterLayout"
-        app:layout_constraintBottom_toTopOf="@id/lastUpdated"/>
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <TextView android:id="@+id/lastUpdated"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:textSize="18sp"
-        android:text="Updated:"/>
+<!--    <TextView android:id="@+id/lastUpdated"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        android:textSize="18sp"-->
+<!--        android:text="Updated:"/>-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

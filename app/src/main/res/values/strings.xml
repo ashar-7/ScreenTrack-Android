@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">ScreenTrack</string>
-    <string name="last_7_days">Last 7 days</string>
+    <string name="this_week">This Week</string>
     <string name="today">Today</string>
     <string name="app_icon_desc">App Icon</string>
     <string name="arrow_desc">Arrow</string>
+    <string name="average">Average</string>
+    <string name="last_used_template">Last used: %1s</string>
 </resources>

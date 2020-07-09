@@ -9,5 +9,24 @@
         android:id="@+id/homeFragment"
         android:name="com.se7en.screentrack.ui.HomeFragment"
         android:label="Home"
-        tools:layout="@layout/fragment_home"/>
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_appDetailFragment"
+            app:destination="@id/appDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/appDetailFragment"
+        android:name="com.se7en.screentrack.ui.AppDetailFragment"
+        android:label="AppDetailFragment">
+
+        <argument android:name="packageName"
+            app:argType="string"
+            app:nullable="false" />
+
+        <argument android:name="appName"
+            app:argType="string"
+            app:nullable="false" />
+
+    </fragment>
 </navigation>

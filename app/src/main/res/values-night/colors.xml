@@ -5,4 +5,6 @@
     <color name="colorBackground">#121212</color>
 
     <color name="toolbarTitleColor">@color/material_on_surface_emphasis_high_type</color>
+
+    <color name="navBarColor">#121212</color>
 </resources>

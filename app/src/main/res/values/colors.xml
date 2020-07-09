@@ -8,4 +8,6 @@
 
     <color name="colorSurface">#ffffff</color>
     <color name="colorBackground">#efefef</color>
+
+    <color name="navBarColor">#ffffff</color>
 </resources>

@@ -8,11 +8,13 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.se7en.screentrack.R
 import com.se7en.screentrack.Utils
+import com.se7en.screentrack.models.App
 import com.se7en.screentrack.models.AppUsage
 import kotlinx.android.synthetic.main.usage_rv_item.view.*
 
 class AppsUsageAdapter(
-    val listChangedListener: () -> Unit
+    val listChangedListener: () -> Unit,
+    val onClick: (app: App) -> Unit
 ):
     ListAdapter<AppUsage, AppsUsageAdapter.ViewHolder>(UsageDiffUtil()) {
 
@@ -38,6 +40,8 @@ class AppsUsageAdapter(
 
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         fun bind(item: AppUsage) {
+            itemView.setOnClickListener { onClick(item.app) }
+
             itemView.totalUsageTime.text = Utils.getUsageTimeString(item.totalTime)
             itemView.appIcon.setImageDrawable(item.app.iconDrawable)
             itemView.appName.text = item.app.appName
