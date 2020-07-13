@@ -7,39 +7,46 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.se7en.screentrack.R
 import com.se7en.screentrack.Utils
-import com.se7en.screentrack.data.database.AppDatabase
+import com.se7en.screentrack.adapters.SessionsAdapter
 import com.se7en.screentrack.models.App
+import com.se7en.screentrack.models.DayStats
 import com.se7en.screentrack.viewmodels.AppDetailViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_app_detail.*
 import org.threeten.bp.format.TextStyle
 import org.threeten.bp.temporal.ChronoUnit
 import java.util.*
 
+
+@AndroidEntryPoint
 class AppDetailFragment: Fragment(R.layout.fragment_app_detail) {
 
-    private val viewModel by viewModels<AppDetailViewModel> {
-        object: ViewModelProvider.Factory {
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return AppDetailViewModel(AppDatabase.getInstance(requireContext())) as T
-            }
-        }
-    }
+    private val viewModel: AppDetailViewModel by viewModels()
     private val args by navArgs<AppDetailFragmentArgs>()
+    private val sessionsAdapter = SessionsAdapter(::listChangedListener)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         (activity as MainActivity).toolbar_title.text = args.appName
         setupViewModelObservers()
+
+        sessionRecyclerView.apply {
+            adapter = sessionsAdapter
+            layoutManager = LinearLayoutManager(context)
+
+            addItemDecoration(AppsListItemDecoration())
+        }
 
         val app = App.fromContext(requireContext(), args.packageName)
         appName.text = app.appName
@@ -52,26 +59,23 @@ class AppDetailFragment: Fragment(R.layout.fragment_app_detail) {
             var lastUsedTime = 0L
             var todayTotal = 0L
             var weekTotal = 0L
-            var todayEntry: BarEntry? = null
             val entries = arrayListOf<BarEntry>()
             val labels = arrayListOf<String>()
             it.forEachIndexed { index, stats ->
                 val entry = BarEntry(index.toFloat(), stats.totalTime.toFloat())
                 val label = stats.dayId.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
-
-                if(stats.dayId.truncatedTo(ChronoUnit.DAYS).isEqual(today)) {
-                    todayEntry = entry
-                    todayTotal = stats.totalTime
-                    label.plus(" (Today)")
-                }
                 entries.add(entry)
                 labels.add(label)
+
+                if(stats.dayId.truncatedTo(ChronoUnit.DAYS).isEqual(today)) {
+                    todayTotal = stats.totalTime
+                }
 
                 weekTotal += stats.totalTime
                 if(stats.lastUsed > lastUsedTime) lastUsedTime = stats.lastUsed
             }
 
-            setupChart(entries, labels, todayEntry)
+            setupChart(entries, labels, it)
 
             lastUsed.text = getString(R.string.last_used_template, Utils.getLastUsedFormattedDate(
                 lastUsedTime
@@ -82,9 +86,19 @@ class AppDetailFragment: Fragment(R.layout.fragment_app_detail) {
 
             Log.d("AppDetailFragment", it.toString())
         })
+
+        viewModel.sessionsLiveData.observe(viewLifecycleOwner, Observer {
+            Log.d("AppDetailFragment", it.toString())
+
+            sessionsAdapter.submitList(it)
+        })
     }
 
-    private fun setupChart(entries: List<BarEntry>, labels: List<String>, todayEntry: BarEntry?) {
+    private fun setupChart(
+        entries: List<BarEntry>,
+        labels: List<String>,
+        dayStats: List<DayStats>
+    ) {
         val datasetValueFormatter = object : ValueFormatter() {
             override fun getFormattedValue(value: Float): String {
                 return Utils.getUsageTimeString(value.toLong())
@@ -114,11 +128,25 @@ class AppDetailFragment: Fragment(R.layout.fragment_app_detail) {
         barChart.axisLeft.isEnabled = false
         barChart.axisRight.isEnabled = false
 
+        barChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+            override fun onNothingSelected() {
+                sessionsAdapter.submitList(listOf())
+                Log.d("AppDetailFragment", "nothing selected")
+            }
+
+            override fun onValueSelected(e: Entry?, h: Highlight?) {
+                Log.d("AppDetailFragment", "something selected ${e?.x}")
+                e?.let {
+                    viewModel.fetchSessions(args.packageName, dayStats[it.x.toInt()].dayId)
+                }
+            }
+        })
         barChart.data = BarData(barDataSet)
         barChart.setDrawGridBackground(false)
-        if(todayEntry != null) {
-            barChart.highlightValue(todayEntry.x, 0)
-        }
         barChart.invalidate()
+    }
+
+    private fun listChangedListener(isEmpty: Boolean) {
+        selectBarTextView.visibility = if(isEmpty) View.VISIBLE else View.GONE
     }
 }

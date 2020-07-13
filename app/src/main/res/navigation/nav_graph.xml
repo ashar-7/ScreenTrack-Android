@@ -3,12 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/permissionFragment">
 
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.se7en.screentrack.ui.HomeFragment"
-        android:label="Home"
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_appDetailFragment"
@@ -18,7 +17,7 @@
     <fragment
         android:id="@+id/appDetailFragment"
         android:name="com.se7en.screentrack.ui.AppDetailFragment"
-        android:label="AppDetailFragment">
+        tools:layout="@layout/fragment_app_detail">
 
         <argument android:name="packageName"
             app:argType="string"
@@ -29,4 +28,26 @@
             app:nullable="false" />
 
     </fragment>
+
+    <fragment
+        android:id="@+id/permissionFragment"
+        android:name="com.se7en.screentrack.ui.PermissionFragment"
+        tools:layout="@layout/fragment_permission">
+        <action
+            android:id="@+id/action_permissionFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/permissionFragment"
+            app:popUpToInclusive="true"
+            />
+    </fragment>
+
+    <fragment
+        android:id="@+id/timelineFragment"
+        android:name="com.se7en.screentrack.ui.TimelineFragment"
+        tools:layout="@layout/fragment_timeline" >
+        <action
+            android:id="@+id/action_timelineFragment_to_appDetailFragment"
+            app:destination="@id/appDetailFragment" />
+    </fragment>
+
 </navigation>

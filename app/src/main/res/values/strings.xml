@@ -6,4 +6,14 @@
     <string name="arrow_desc">Arrow</string>
     <string name="average">Average</string>
     <string name="last_used_template">Last used: %1s</string>
+    <string name="sessions">Sessions</string>
+    <string name="select_day_sessions">Select a day from the chart to view sessions of that day</string>
+    <string name="requires_permission">This app requires the App Usage Access permission to work. Once you\'ve granted the permission, tap on Proceed to start using the app.</string>
+    <string name="proceed">Proceed</string>
+    <string name="settings">Settings</string>
+    <string name="current_tab_key">current_tab</string>
+    <string name="home">Home</string>
+    <string name="timeline">Timeline</string>
+    <string name="end">End</string>
+    <string name="start">Start</string>
 </resources>

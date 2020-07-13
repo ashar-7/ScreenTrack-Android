@@ -2,27 +2,25 @@ package com.se7en.screentrack.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
-import com.se7en.screentrack.data.database.AppDatabase
+import com.se7en.screentrack.data.AppUsageManager
+import com.se7en.screentrack.data.database.StatsDao
 import com.se7en.screentrack.models.DayStats
+import com.se7en.screentrack.models.SessionMinimal
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.map
+import org.threeten.bp.ZonedDateTime
+import javax.inject.Inject
 
-class AppDetailRepository private constructor(
-    db: AppDatabase
+
+class AppDetailRepository @Inject constructor(
+    private val statsDao: StatsDao,
+    private val appUsageManager: AppUsageManager
 ) {
-    private val statsDao = db.statsDao()
 
     fun getDayStats(packageName: String): LiveData<List<DayStats>> {
         return statsDao.getDayStats(packageName).filterNotNull().asLiveData()
     }
 
-    companion object {
-        @Volatile private var instance: AppDetailRepository? = null
-
-        fun getInstance(db: AppDatabase): AppDetailRepository {
-            return instance ?: synchronized(this) {
-                instance ?: AppDetailRepository(db).also { instance = it }
-            }
-        }
+    suspend fun getSessions(packageName: String, date: ZonedDateTime): List<SessionMinimal> {
+        return appUsageManager.getSessions(packageName, date)
     }
 }

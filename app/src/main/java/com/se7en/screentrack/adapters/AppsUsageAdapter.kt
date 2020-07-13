@@ -34,7 +34,6 @@ class AppsUsageAdapter(
         currentList: MutableList<AppUsage>
     ) {
         super.onCurrentListChanged(previousList, currentList)
-
         listChangedListener()
     }
 

@@ -1,19 +1,21 @@
 package com.se7en.screentrack.viewmodels
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.se7en.screentrack.data.AppUsageManager
-import com.se7en.screentrack.data.database.AppDatabase
 import com.se7en.screentrack.models.UsageData
 import com.se7en.screentrack.repository.HomeRepository
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class HomeViewModel(
-    db: AppDatabase,
-    appUsageManager: AppUsageManager
+class HomeViewModel @ViewModelInject constructor(
+    private val repository: HomeRepository
 ): ViewModel() {
 
     val filterLiveData = MutableLiveData<AppUsageManager.FILTER>()
-    private val repository = HomeRepository.getInstance(db, appUsageManager)
+
+    private val todayUsageData =  MutableLiveData<UsageData>()
+    private val last7DaysUsageData = MutableLiveData<UsageData>()
 
     val usageStatsLiveData: LiveData<UsageData> =
         Transformations.switchMap(filterLiveData) { filter ->
@@ -22,13 +24,21 @@ class HomeViewModel(
 
     private fun getUsageData(filter: AppUsageManager.FILTER) =
         when(filter) {
-            AppUsageManager.FILTER.TODAY -> repository.todayUsageData
-            AppUsageManager.FILTER.THIS_WEEK -> repository.last7DaysUsageData
+            AppUsageManager.FILTER.TODAY -> todayUsageData
+            AppUsageManager.FILTER.THIS_WEEK -> last7DaysUsageData
         }
 
     init {
-        viewModelScope.launch { repository.fetchTodayUsageData() }
-        viewModelScope.launch { repository.fetchWeekUsageData() }
+        viewModelScope.launch {
+            repository.getTodayUsageData().collect {
+                todayUsageData.value = it
+            }
+        }
+        viewModelScope.launch {
+            repository.getWeekUsageData().collect {
+                last7DaysUsageData.value = it
+            }
+        }
         viewModelScope.launch { repository.updateData() }
     }
 }

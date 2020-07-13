@@ -1,7 +1,7 @@
 package com.se7en.screentrack.models
 
-data class Session(
+data class SessionMinimal(
     val startMillis: Long,
     val endMillis: Long,
-    val app: App
+    val packageName: String
 )

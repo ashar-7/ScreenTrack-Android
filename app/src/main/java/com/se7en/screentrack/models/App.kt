@@ -10,12 +10,6 @@ data class App(
     val appName: String,
     var iconDrawable: Drawable?
 ) {
-
-    constructor(
-        packageName: String,
-        appName: String
-    ): this(packageName, appName, null)
-
     fun setDrawableIfNull(context: Context): App {
         if(iconDrawable == null) {
             try {
@@ -34,15 +28,14 @@ data class App(
             context: Context,
             packageName: String
         ): App {
-            var appIcon: Drawable?
+            var appIcon: Drawable? = null
             var appName: String
             try {
                 val pm = context.packageManager
+                appIcon = pm.getApplicationIcon(packageName)
                 val info = pm.getApplicationInfo(packageName, PackageManager.GET_META_DATA)
-                appIcon = pm.getApplicationIcon(info)
                 appName = pm.getApplicationLabel(info).toString()
             } catch (e: Exception) {
-                appIcon = null
                 appName = "$packageName (uninstalled)"
             }
 
