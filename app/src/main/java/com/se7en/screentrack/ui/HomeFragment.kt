@@ -29,23 +29,5 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
             }
         }.attach()
     }
-
-//    override fun onPause() {
-//        super.onPause()
-//        timeFilterLayout.clearOnTabSelectedListeners()
-//    }
-//
-//    override fun onResume() {
-//        super.onResume()
-//        timeFilterLayout.addOnTabSelectedListener(object :
-//            TabLayout.OnTabSelectedListener {
-//            override fun onTabSelected(tab: TabLayout.Tab) {
-//                filterList(tab.position)
-//            }
-//
-//            override fun onTabReselected(tab: TabLayout.Tab) {}
-//            override fun onTabUnselected(tab: TabLayout.Tab) {}
-//        })
-//    }
 }
 

@@ -1,10 +1,8 @@
 package com.se7en.screentrack.repository
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import com.se7en.screentrack.Utils
 import com.se7en.screentrack.data.AppUsageManager
-import com.se7en.screentrack.data.database.AppDatabase
 import com.se7en.screentrack.data.database.StatsDao
 import com.se7en.screentrack.models.UsageData
 import kotlinx.coroutines.flow.Flow
@@ -36,7 +34,7 @@ class HomeRepository @Inject constructor(
         return statsDao.getDaysWithDayStats().filterNotNull().map {
             it.forEach { stats ->
                 if(stats.day.date.isBefore(weekStart)) {
-                    // remove this guy
+                    // remove this day's data
                     statsDao.delete(stats.day)
                 }
             }
@@ -50,10 +48,6 @@ class HomeRepository @Inject constructor(
 
     suspend fun updateData() {
         Log.d("HomeRepository", "updating...")
-//        val today = Utils.getZonedDateTime(System.currentTimeMillis(), ChronoUnit.DAYS)
-//        statsDao.upsert(listOf(appUsageManager.getDayWithStats(today)))
         statsDao.upsert(appUsageManager.getDayWithStatsForWeek())
-        // get stats for today first and upsert it, then get stats for rest of the days
     }
 }
-// TODO: display progress bar when updating

@@ -7,6 +7,5 @@ import org.threeten.bp.ZonedDateTime
 @Entity
 data class Day(
     @PrimaryKey val date: ZonedDateTime,
-//    val totalTime: Long,
     val lastUpdated: Long
 )

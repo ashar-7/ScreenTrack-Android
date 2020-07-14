@@ -3,7 +3,6 @@ package com.se7en.screentrack.data
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
 import android.content.Context
-import android.util.Log
 import com.se7en.screentrack.Utils
 import com.se7en.screentrack.models.*
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -109,65 +108,56 @@ class AppUsageManager @Inject constructor(
             eventsMap.forEach { (packageName, events) ->
                 val pm = context.packageManager
 
-                try {
-                    if (pm.getLaunchIntentForPackage(packageName) != null) {
-                        var startTime = 0L
-                        var endTime = 0L
-                        var totalTime = 0L
-                        var lastUsed = 0L
-                        events.forEach { event ->
-                            when (event.eventType) {
-                                UsageEvents.Event.ACTIVITY_RESUMED -> { // same as MOVE_TO_FOREGROUND
-                                    // start time
-                                    startTime = event.timeStamp
-                                }
-
-                                UsageEvents.Event.ACTIVITY_PAUSED -> { // same as MOVE_TO_BACKGROUND
-                                    // end time
-                                    endTime = event.timeStamp
-                                    lastUsed = endTime
-                                }
+                if (pm.getLaunchIntentForPackage(packageName) != null) {
+                    var startTime = 0L
+                    var endTime = 0L
+                    var totalTime = 0L
+                    var lastUsed = 0L
+                    events.forEach { event ->
+                        when (event.eventType) {
+                            UsageEvents.Event.ACTIVITY_RESUMED -> { // same as MOVE_TO_FOREGROUND
+                                // start time
+                                startTime = event.timeStamp
                             }
 
-                            // If an end event exists but a start event was not found,
-                            // it's likely that the app was running before midnight
-                            // so set startTime of the event to todayStart
-                            if (startTime == 0L && endTime != 0L) startTime = timeStartMillis
-
-                            // If both start and end times exist, add the time to totalTime
-                            // and reset start and end times
-                            if (startTime != 0L && endTime != 0L) {
-                                totalTime += endTime - startTime
-                                startTime = 0L; endTime = 0L
+                            UsageEvents.Event.ACTIVITY_PAUSED -> { // same as MOVE_TO_BACKGROUND
+                                // end time
+                                endTime = event.timeStamp
+                                lastUsed = endTime
                             }
                         }
 
-                        // If the end time was not found, it's likely that the app is still running
-                        // so assume the end time to be now
-                        if (startTime != 0L && endTime == 0L) {
-                            lastUsed = timeEndMillis
-                            totalTime += lastUsed - startTime
-                        }
+                        // If an end event exists but a start event was not found,
+                        // it's likely that the app was running before midnight
+                        // so set startTime of the event to todayStart
+                        if (startTime == 0L && endTime != 0L) startTime = timeStartMillis
 
-                        // If total time is more than 1 second
-                        if (totalTime >= 1000) {
-                            try {
-                                val stats = DayStats(
-                                    packageName,
-                                    totalTime,
-                                    lastUsed,
-                                    date
-                                )
-
-                                statsList.add(stats)
-                            } catch (e: Exception) {
-                                Log.d("AppUsageManager", "Failed to get info for $packageName")
-                            }
+                        // If both start and end times exist, add the time to totalTime
+                        // and reset start and end times
+                        if (startTime != 0L && endTime != 0L) {
+                            totalTime += endTime - startTime
+                            startTime = 0L; endTime = 0L
                         }
                     }
-                } catch (e: Exception) {
-                    // TODO: also display uninstalled apps
-                    Log.d("AppUsageManager", "Failed to get info for $packageName")
+
+                    // If the end time was not found, it's likely that the app is still running
+                    // so assume the end time to be now
+                    if (startTime != 0L && endTime == 0L) {
+                        lastUsed = timeEndMillis
+                        totalTime += lastUsed - startTime
+                    }
+
+                    // If total time is more than 1 second
+                    if (totalTime >= 1000) {
+                        val stats = DayStats(
+                            packageName,
+                            totalTime,
+                            lastUsed,
+                            date
+                        )
+
+                        statsList.add(stats)
+                    }
                 }
             }
         }

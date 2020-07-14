@@ -7,7 +7,6 @@ import androidx.core.content.edit
 object SettingsManager {
 
     private const val THEME_PREFS_KEY = "theme"
-    private const val MEME_BG_PREFS_KEY = "darkMemeBG"
 
     enum class Theme {
         LIGHT {
@@ -71,14 +70,4 @@ object SettingsManager {
             else -> Theme.FOLLOW_SYSTEM
         }
     }
-
-    fun setIsDarkMemeBG(flag: Boolean, sharedPrefs: SharedPreferences?) {
-        sharedPrefs?.edit {
-            putBoolean(MEME_BG_PREFS_KEY, flag)
-            apply()
-        }
-    }
-
-    fun getIsDarkMemeBG(sharedPrefs: SharedPreferences?)
-            = sharedPrefs?.getBoolean(MEME_BG_PREFS_KEY, false) ?: false
 }

@@ -1,10 +1,9 @@
 package com.se7en.screentrack.data.database
 
-import android.util.Log
 import androidx.room.*
-import com.se7en.screentrack.models.DayWithDayStats
-import com.se7en.screentrack.models.DayStats
 import com.se7en.screentrack.models.Day
+import com.se7en.screentrack.models.DayStats
+import com.se7en.screentrack.models.DayWithDayStats
 import kotlinx.coroutines.flow.Flow
 import org.threeten.bp.ZonedDateTime
 
