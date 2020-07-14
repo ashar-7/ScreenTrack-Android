@@ -49,5 +49,9 @@
             android:id="@+id/action_timelineFragment_to_appDetailFragment"
             app:destination="@id/appDetailFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.se7en.screentrack.ui.SettingsFragment"
+        tools:layout="@layout/fragment_timeline" />
 
 </navigation>

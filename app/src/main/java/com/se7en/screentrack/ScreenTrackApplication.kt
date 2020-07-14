@@ -1,7 +1,7 @@
 package com.se7en.screentrack
 
 import android.app.Application
-import androidx.appcompat.app.AppCompatDelegate
+import android.content.Context
 import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.hilt.android.HiltAndroidApp
 
@@ -10,7 +10,7 @@ class ScreenTrackApplication: Application() {
     override fun onCreate() {
         super.onCreate()
 
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        SettingsManager.initTheme(getSharedPreferences(getString(R.string.app_shared_prefs_name), Context.MODE_PRIVATE))
         AndroidThreeTen.init(this)
     }
 }

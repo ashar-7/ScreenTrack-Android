@@ -1,13 +1,8 @@
 package com.se7en.screentrack.ui
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
-import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
@@ -30,7 +25,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         toolbar.setupWithNavController(
             navController,
             AppBarConfiguration.Builder(
-                setOf(R.id.permissionFragment, R.id.homeFragment)
+                setOf(R.id.permissionFragment, R.id.homeFragment, R.id.timelineFragment, R.id.settingsFragment)
             ).build()
         )
 
@@ -45,26 +40,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     override fun onPause() {
         super.onPause()
         navController.removeOnDestinationChangedListener(this)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.options_menu, menu)
-
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId) {
-            R.id.nightModeSwitch -> {
-                if(AppCompatDelegate.getDefaultNightMode() == MODE_NIGHT_YES)
-                    AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO)
-                else
-                    AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES)
-                false
-            }
-
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 
     override fun onDestinationChanged(
@@ -83,12 +58,18 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
                 bottomNav.visibility = View.VISIBLE
             }
 
+            R.id.settingsFragment -> {
+                toolbar_title.text = getString(R.string.settings)
+                bottomNav.visibility = View.VISIBLE
+            }
+
             R.id.permissionFragment -> {
                 toolbar_title.text = getString(R.string.app_name)
                 bottomNav.visibility = View.GONE
             }
 
             R.id.appDetailFragment -> {
+                toolbar_title.text = ""
                 bottomNav.visibility = View.GONE
             }
         }

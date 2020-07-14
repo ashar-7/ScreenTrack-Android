@@ -23,7 +23,6 @@ import com.se7en.screentrack.models.App
 import com.se7en.screentrack.models.DayStats
 import com.se7en.screentrack.viewmodels.AppDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_app_detail.*
 import org.threeten.bp.format.TextStyle
 import org.threeten.bp.temporal.ChronoUnit
@@ -38,7 +37,6 @@ class AppDetailFragment: Fragment(R.layout.fragment_app_detail) {
     private val sessionsAdapter = SessionsAdapter(::listChangedListener)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        (activity as MainActivity).toolbar_title.text = args.appName
         setupViewModelObservers()
 
         sessionRecyclerView.apply {

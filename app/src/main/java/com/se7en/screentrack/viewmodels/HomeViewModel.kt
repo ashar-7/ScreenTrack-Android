@@ -12,17 +12,10 @@ class HomeViewModel @ViewModelInject constructor(
     private val repository: HomeRepository
 ): ViewModel() {
 
-    val filterLiveData = MutableLiveData<AppUsageManager.FILTER>()
-
     private val todayUsageData =  MutableLiveData<UsageData>()
     private val last7DaysUsageData = MutableLiveData<UsageData>()
 
-    val usageStatsLiveData: LiveData<UsageData> =
-        Transformations.switchMap(filterLiveData) { filter ->
-            getUsageData(filter)
-        }
-
-    private fun getUsageData(filter: AppUsageManager.FILTER) =
+    fun getUsageLiveData(filter: AppUsageManager.FILTER) =
         when(filter) {
             AppUsageManager.FILTER.TODAY -> todayUsageData
             AppUsageManager.FILTER.THIS_WEEK -> last7DaysUsageData
