@@ -3,7 +3,6 @@ package com.se7en.screentrack.data
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
 import android.content.Context
-import com.se7en.screentrack.Utils
 import com.se7en.screentrack.models.*
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -12,10 +11,11 @@ import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.temporal.ChronoUnit
 import javax.inject.Inject
-import kotlin.math.abs
 import kotlin.math.max
 
 
+// This file's code was beautiful once but now it's ugly because of undefined behaviours
+// in the queryEvents API and shit
 class AppUsageManager @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
@@ -85,11 +85,14 @@ class AppUsageManager @Inject constructor(
     ): DayWithDayStats {
         val statsList = arrayListOf<DayStats>()
 
-        val timeStartMillis = Utils.getStartOfDayMillis(date)
+        val utc = ZoneId.of("UTC")
+        val defaultZone = ZoneId.systemDefault()
+        val startDate = date.toLocalDate().atStartOfDay(defaultZone).withZoneSameInstant(utc)
+        val timeStartMillis = startDate.toInstant().toEpochMilli()
         val todayDate = ZonedDateTime.now(ZoneId.systemDefault()).truncatedTo(ChronoUnit.DAYS)
         val timeEndMillis = if (date.truncatedTo(ChronoUnit.DAYS).isEqual(todayDate)) {
             System.currentTimeMillis()
-        } else Utils.getStartOfDayMillis(date.plusDays(1))
+        } else startDate.plusDays(1).minusSeconds(1).toInstant().toEpochMilli()
 
         if (usageStatsManager != null) {
             val eventsMap = mutableMapOf<String, MutableList<UsageEvents.Event>>()
@@ -113,24 +116,30 @@ class AppUsageManager @Inject constructor(
                     var endTime = 0L
                     var totalTime = 0L
                     var lastUsed = 0L
+                    var isInitialized = false
                     events.forEach { event ->
                         when (event.eventType) {
                             UsageEvents.Event.ACTIVITY_RESUMED -> { // same as MOVE_TO_FOREGROUND
                                 // start time
+                                isInitialized = true
                                 startTime = event.timeStamp
+                                endTime = 0L
                             }
 
                             UsageEvents.Event.ACTIVITY_PAUSED -> { // same as MOVE_TO_BACKGROUND
                                 // end time
-                                endTime = event.timeStamp
-                                lastUsed = endTime
+                                if (startTime == 0L) {
+                                    if(!isInitialized) {
+                                        startTime = timeStartMillis
+                                        endTime = event.timeStamp
+                                        lastUsed = endTime
+                                    }
+                                } else {
+                                    endTime = event.timeStamp
+                                    lastUsed = endTime
+                                }
                             }
                         }
-
-                        // If an end event exists but a start event was not found,
-                        // it's likely that the app was running before midnight
-                        // so set startTime of the event to todayStart
-                        if (startTime == 0L && endTime != 0L) startTime = timeStartMillis
 
                         // If both start and end times exist, add the time to totalTime
                         // and reset start and end times
@@ -155,7 +164,6 @@ class AppUsageManager @Inject constructor(
                             lastUsed,
                             date
                         )
-
                         statsList.add(stats)
                     }
                 }
@@ -173,42 +181,55 @@ class AppUsageManager @Inject constructor(
     suspend fun getSessions(packageName: String, date: ZonedDateTime): List<SessionMinimal> {
         return withContext(Dispatchers.Default) {
             val sessions = arrayListOf<SessionMinimal>()
-            val timeStart = Utils.getStartOfDayMillis(date)
-            val timeEnd = date.plusDays(1).minusSeconds(1).toInstant().toEpochMilli()
+            val utc = ZoneId.of("UTC")
+            val defaultZone = ZoneId.systemDefault()
+            val startDate = date.toLocalDate().atStartOfDay(defaultZone).withZoneSameInstant(utc)
+            val timeStart = startDate.toInstant().toEpochMilli()
+            val todayDate = ZonedDateTime.now(ZoneId.systemDefault()).truncatedTo(ChronoUnit.DAYS)
+            val timeEnd = if (date.truncatedTo(ChronoUnit.DAYS).isEqual(todayDate)) {
+                System.currentTimeMillis()
+            } else startDate.plusDays(1).minusSeconds(1).toInstant().toEpochMilli()
 
             if(usageStatsManager != null) {
                 val events = usageStatsManager.queryEvents(timeStart, timeEnd)
                 var startTime = 0L
                 var endTime = 0L
+                var isInitialized = false
                 while(events.hasNextEvent()) {
                     val event = UsageEvents.Event()
                     events.getNextEvent(event)
                     if(event.packageName == packageName) {
                         when (event.eventType) {
                             UsageEvents.Event.ACTIVITY_RESUMED -> { // same as MOVE_TO_FOREGROUND
-                                if(abs(endTime - event.timeStamp) > 1000) {
-                                    if (startTime != 0L && endTime != 0L) {
-                                        // we have a session
-                                        val session = SessionMinimal(
-                                            startTime,
-                                            endTime,
-                                            packageName
-                                        )
-
-                                        sessions.add(session)
-
-                                        endTime = 0L
-                                    }
-
-                                    startTime = event.timeStamp
-                                }
+                                isInitialized = true
+                                startTime = event.timeStamp
+                                endTime = 0L
                             }
 
                             UsageEvents.Event.ACTIVITY_PAUSED -> { // same as MOVE_TO_BACKGROUND
                                 // end time
-                                if(startTime == 0L) startTime = timeStart
-                                endTime = event.timeStamp
+                                if(startTime == 0L) {
+                                    if(!isInitialized) {
+                                        startTime = timeStart
+                                        endTime = event.timeStamp
+                                    }
+                                } else {
+                                    endTime = event.timeStamp
+                                }
                             }
+                        }
+
+                        if (startTime != 0L && endTime != 0L) {
+                            // we have a session
+                            val session = SessionMinimal(
+                                startTime,
+                                endTime,
+                                packageName
+                            )
+
+                            sessions.add(session)
+
+                            startTime = 0L; endTime = 0L
                         }
                     }
                 }
@@ -242,8 +263,14 @@ class AppUsageManager @Inject constructor(
     ): List<Session> {
         return withContext(Dispatchers.Default) {
             val sessions = arrayListOf<Session>()
-            val timeStart = Utils.getStartOfDayMillis(date)
-            val timeEnd = date.plusDays(1).minusSeconds(1).toInstant().toEpochMilli()
+            val utc = ZoneId.of("UTC")
+            val defaultZone = ZoneId.systemDefault()
+            val startDate = date.toLocalDate().atStartOfDay(defaultZone).withZoneSameInstant(utc)
+            val timeStart = startDate.toInstant().toEpochMilli()
+            val todayDate = ZonedDateTime.now(ZoneId.systemDefault()).truncatedTo(ChronoUnit.DAYS)
+            val timeEnd = if (date.truncatedTo(ChronoUnit.DAYS).isEqual(todayDate)) {
+                System.currentTimeMillis()
+            } else startDate.plusDays(1).minusSeconds(1).toInstant().toEpochMilli()
 
             if (usageStatsManager != null) {
                 val eventsMap = mutableMapOf<String, MutableList<UsageEvents.Event>>()
@@ -265,33 +292,39 @@ class AppUsageManager @Inject constructor(
                     if (pm.getLaunchIntentForPackage(packageName) != null) {
                         var startTime = 0L
                         var endTime = 0L
+                        var isInitialized = false
                         events.forEach { event ->
                             when (event.eventType) {
                                 UsageEvents.Event.ACTIVITY_RESUMED -> { // same as MOVE_TO_FOREGROUND
-
-                                    if(abs(endTime - event.timeStamp) > 1000) {
-                                        if (startTime != 0L && endTime != 0L) {
-                                            // we have a session
-                                            val session = Session(
-                                                startTime,
-                                                endTime,
-                                                App.fromContext(context, packageName)
-                                            )
-
-                                            sessions.add(session)
-
-                                            endTime = 0L
-                                        }
-
-                                        startTime = event.timeStamp
-                                    }
+                                    isInitialized = true
+                                    startTime = event.timeStamp
+                                    endTime = 0L
                                 }
 
                                 UsageEvents.Event.ACTIVITY_PAUSED -> { // same as MOVE_TO_BACKGROUND
                                     // end time
-                                    if(startTime == 0L) startTime = timeStart
-                                    endTime = event.timeStamp
+                                    if(startTime == 0L) {
+                                        if(!isInitialized) {
+                                            startTime = timeStart
+                                            endTime = event.timeStamp
+                                        }
+                                    } else {
+                                        endTime = event.timeStamp
+                                    }
                                 }
+                            }
+
+                            if (startTime != 0L && endTime != 0L) {
+                                // we have a session
+                                val session = Session(
+                                    startTime,
+                                    endTime,
+                                    App.fromContext(context, packageName)
+                                )
+
+                                sessions.add(session)
+
+                                startTime = 0L; endTime = 0L
                             }
                         }
 
@@ -299,8 +332,6 @@ class AppUsageManager @Inject constructor(
                         // so assume the end time to be now
                         if (startTime != 0L && endTime == 0L) {
                             endTime = timeEnd
-                            if (endTime > System.currentTimeMillis())
-                                endTime = System.currentTimeMillis()
                         }
 
                         if (startTime != 0L && endTime != 0L) {
