@@ -15,3 +15,13 @@ Get the latest APK from [releases](https://github.com/ashar-7/ScreenTrack-Androi
 * [Material Spinner](https://github.com/jaredrummler/MaterialSpinner)
 * [ThreeTenABP](https://github.com/JakeWharton/ThreeTenABP)
 
+#### Data
+The data is fetched from [UsageStatsManager](https://developer.android.com/reference/android/app/usage/UsageStatsManager)'s [queryEvents](https://developer.android.com/reference/android/app/usage/UsageStatsManager#queryEvents(long,%20long)) function.
+
+#### Permissions
+To use [UsageStatsManager](https://developer.android.com/reference/android/app/usage/UsageStatsManager), the [Manifest.permission.PACKAGE_USAGE_STATS](https://developer.android.com/reference/android/Manifest.permission#PACKAGE_USAGE_STATS) permission is required.
+
+#### Accuracy
+The data should probably be accurate on most devices but I did experience a few abnormalities in the
+usage events of some devices. For instance, some [ACTIVITY_PAUSE](https://developer.android.com/reference/kotlin/android/app/usage/UsageEvents.Event#ACTIVITY_PAUSED:kotlin.Int) events without their corresponding [ACTIVITY_RESUME](https://developer.android.com/reference/kotlin/android/app/usage/UsageEvents.Event#ACTIVITY_RESUMED:kotlin.Int) events (which the app ignores).
+
