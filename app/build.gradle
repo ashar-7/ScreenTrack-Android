@@ -77,9 +77,6 @@ dependencies {
     // ThreeTenABP
     implementation 'com.jakewharton.threetenabp:threetenabp:1.2.4'
 
-    // Gson
-    implementation 'com.google.code.gson:gson:2.8.6'
-
     // MPAndroidChart
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
