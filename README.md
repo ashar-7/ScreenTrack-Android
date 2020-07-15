@@ -4,6 +4,13 @@ Android App for monitoring app usage. Using MVVM architecture and Hilt for Depen
 ### Download
 Get the latest APK from [releases](https://github.com/ashar-7/ScreenTrack-Android/releases)
 
+### Screenshots
+<img src="screenshots/home_light.png" width=250/> <img src="screenshots/home_dark.png" width=250/>
+
+<img src="screenshots/app_detail_light.png" width=250/> <img src="screenshots/app_detail_dark.png" width=250/>
+
+<img src="screenshots/timeline_light.png" width=250/> <img src="screenshots/timeline_dark.png" width=250/>
+
 ### Libraries used
 * [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel)
 * [LiveData](https://developer.android.com/topic/libraries/architecture/livedata)
