@@ -1,5 +1,5 @@
 # ScreenTrack-Android
-Android App for monitoring app usage. Using MVVM architecture and Hilt for Dependency Injection.
+Android App for monitoring app usage. Using MVVM architecture and Dagger Hilt.
 
 ### Download
 Get the latest APK from [releases](https://github.com/ashar-7/ScreenTrack-Android/releases)
