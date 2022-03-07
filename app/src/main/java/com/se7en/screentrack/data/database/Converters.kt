@@ -1,9 +1,6 @@
 package com.se7en.screentrack.data.database
 
 import androidx.room.TypeConverter
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import com.se7en.screentrack.Constants
 import com.se7en.screentrack.Utils
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.temporal.ChronoUnit

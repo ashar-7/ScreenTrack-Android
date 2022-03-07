@@ -13,13 +13,9 @@ import org.threeten.bp.temporal.ChronoUnit
 import javax.inject.Inject
 import kotlin.math.max
 
-
-// This file's code was beautiful once but now it's ugly because of undefined behaviours
-// in the queryEvents API and shit
 class AppUsageManager @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
-
     private val usageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager?
 
     enum class FILTER { TODAY, THIS_WEEK }
