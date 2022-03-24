@@ -45,4 +45,14 @@ class TimeLimitRepository @Inject constructor(
     suspend fun deleteTimeLimit(packageName: String) {
         timeLimitDao.delete(packageName)
     }
+
+    fun getTimeLimitBlocking(packageName: String): AppTimeLimit? =
+        timeLimitDao.getTimeLimitBlocking(packageName)?.let {
+            AppTimeLimit(
+                packageName = it.packageName,
+                hour = it.hour,
+                minute = it.minute
+            )
+        }
+
 }

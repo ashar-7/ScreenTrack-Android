@@ -13,6 +13,9 @@ abstract class TimeLimitDao {
     @Query("SELECT * FROM timelimit WHERE packageName = :packageName")
     abstract fun getTimeLimit(packageName: String): LiveData<TimeLimit?>
 
+    @Query("SELECT * FROM timelimit WHERE packageName = :packageName")
+    abstract fun getTimeLimitBlocking(packageName: String): TimeLimit?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insert(timeLimit: TimeLimit)
 
