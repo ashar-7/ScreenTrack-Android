@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.se7en.screentrack.data.database.AppDatabase
 import com.se7en.screentrack.data.database.StatsDao
+import com.se7en.screentrack.data.database.TimeLimitDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,7 +25,7 @@ object ApplicationModule {
             appContext,
             AppDatabase::class.java,
             "app-database"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 
     @Provides
@@ -32,5 +33,12 @@ object ApplicationModule {
         database: AppDatabase
     ): StatsDao {
         return database.statsDao()
+    }
+
+    @Provides
+    fun provideTimeLimitDao(
+        database: AppDatabase
+    ): TimeLimitDao {
+        return database.timeLimitDao()
     }
 }

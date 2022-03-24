@@ -1,9 +1,12 @@
 package com.se7en.screentrack.ui
 
+import android.app.TimePickerDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -20,7 +23,7 @@ import com.se7en.screentrack.R
 import com.se7en.screentrack.Utils
 import com.se7en.screentrack.adapters.SessionsAdapter
 import com.se7en.screentrack.models.App
-import com.se7en.screentrack.models.DayStats
+import com.se7en.screentrack.data.database.entity.DayStats
 import com.se7en.screentrack.viewmodels.AppDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_app_detail.*
@@ -39,6 +42,14 @@ class AppDetailFragment: Fragment(R.layout.fragment_app_detail) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupViewModelObservers()
 
+        timeLimitButton.setOnClickListener {
+            openTimePicker()
+        }
+
+        removeTimeLimitButton.setOnClickListener {
+            viewModel.removeTimeLimit(args.packageName)
+        }
+
         sessionRecyclerView.apply {
             adapter = sessionsAdapter
             layoutManager = LinearLayoutManager(context)
@@ -49,6 +60,16 @@ class AppDetailFragment: Fragment(R.layout.fragment_app_detail) {
         val app = App.fromContext(requireContext(), args.packageName)
         appName.text = app.appName
         appIcon.setImageDrawable(app.iconDrawable)
+    }
+
+    private fun openTimePicker() {
+        TimePickerDialog(
+            requireContext(),
+            { _, hour, minute ->
+                viewModel.setTimeLimit(args.packageName, hour, minute)
+            },
+            1, 0, true
+        ).show()
     }
 
     private fun setupViewModelObservers() {
@@ -84,6 +105,17 @@ class AppDetailFragment: Fragment(R.layout.fragment_app_detail) {
 
             Log.d("AppDetailFragment", it.toString())
         })
+
+        viewModel.getTimeLimit(packageName = args.packageName).observe(viewLifecycleOwner) {
+            if (it != null) {
+                timeLimitButton.isGone = true
+                timeLimitCard.isVisible = true
+                timeLimitText.text = "${it.hour}h ${it.minute}m"
+            } else {
+                timeLimitCard.isGone = true
+                timeLimitButton.isVisible = true
+            }
+        }
 
         viewModel.sessionsLiveData.observe(viewLifecycleOwner, Observer {
             Log.d("AppDetailFragment", it.toString())

@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import com.se7en.screentrack.data.AppUsageManager
 import com.se7en.screentrack.data.database.StatsDao
-import com.se7en.screentrack.models.DayStats
+import com.se7en.screentrack.data.database.entity.DayStats
 import com.se7en.screentrack.models.SessionMinimal
 import kotlinx.coroutines.flow.filterNotNull
 import org.threeten.bp.ZonedDateTime

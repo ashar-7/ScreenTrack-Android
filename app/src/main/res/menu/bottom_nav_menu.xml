@@ -9,6 +9,10 @@
         android:title="@string/timeline"
         android:icon="@drawable/ic_timeline"/>
 
+    <item android:id="@+id/timeLimitListFragment"
+        android:title="@string/time_limits"
+        android:icon="@drawable/outline_hourglass_top_24"/>
+
     <item android:id="@+id/settingsFragment"
         android:title="@string/settings"
         android:icon="@drawable/ic_settings"/>

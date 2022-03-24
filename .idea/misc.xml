@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Code/Open Source/Android/ScreenTrack-Android/app/src/main/res/layout/fragment_app_detail.xml" value="0.12158054711246201" />
+        <entry key="..\:/Code/Open Source/Android/ScreenTrack-Android/app/src/main/res/layout/fragment_settings.xml" value="0.22554347826086957" />
+        <entry key="..\:/Code/Open Source/Android/ScreenTrack-Android/app/src/main/res/layout/fragment_usage_list.xml" value="0.22554347826086957" />
+        <entry key="..\:/Code/Open Source/Android/ScreenTrack-Android/app/src/main/res/layout/time_limit_list_fragment.xml" value="0.22554347826086957" />
+        <entry key="..\:/Code/Open Source/Android/ScreenTrack-Android/app/src/main/res/layout/time_limit_rv_item.xml" value="0.2" />
+        <entry key="..\:/Code/Open Source/Android/ScreenTrack-Android/app/src/main/res/layout/usage_rv_item.xml" value="0.22554347826086957" />
+        <entry key="..\:/Code/Open Source/Android/ScreenTrack-Android/app/src/main/res/menu/bottom_nav_menu.xml" value="0.25" />
+        <entry key="..\:/Code/Open Source/Android/ScreenTrack-Android/app/src/main/res/xml/service.xml" value="0.22554347826086957" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>

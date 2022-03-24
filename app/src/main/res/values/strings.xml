@@ -18,4 +18,7 @@
     <string name="start">Start</string>
     <string name="theme">Theme</string>
     <string name="app_shared_prefs_name">app_prefs</string>
+    <string name="set_time_limit">Set Time Limit</string>
+    <string name="time_limit">Time Limit</string>
+    <string name="time_limits">Time Limits</string>
 </resources>

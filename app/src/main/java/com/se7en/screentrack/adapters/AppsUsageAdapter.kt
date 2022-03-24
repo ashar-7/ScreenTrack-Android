@@ -41,7 +41,7 @@ class AppsUsageAdapter(
         fun bind(item: AppUsage) {
             itemView.setOnClickListener { onClick(item.app) }
 
-            itemView.totalUsageTime.text = Utils.getUsageTimeString(item.totalTime)
+            itemView.timeLimit.text = Utils.getUsageTimeString(item.totalTime)
             itemView.appIcon.setImageDrawable(item.app.iconDrawable)
             itemView.appName.text = item.app.appName
         }

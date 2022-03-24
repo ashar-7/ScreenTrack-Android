@@ -1,63 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <LinearLayout
+            style="@style/Surface"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            style="@style/Surface">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
             <com.github.mikephil.charting.charts.BarChart
                 android:id="@+id/barChart"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp"
                 android:layout_width="match_parent"
-                android:layout_height="300dp" />
+                android:layout_height="300dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
                 android:layout_gravity="center"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal"
                 tools:ignore="UseCompoundDrawables">
-                <ImageView android:id="@+id/appIcon"
-                    android:layout_gravity="center"
+
+                <ImageView
+                    android:id="@+id/appIcon"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
+                    android:layout_gravity="center"
                     android:contentDescription="@string/app_icon_desc"
-                    tools:src="@drawable/ic_launcher_background"/>
+                    tools:src="@drawable/ic_launcher_background" />
 
                 <LinearLayout
-                    android:layout_marginStart="8dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:orientation="vertical">
-                    <TextView android:id="@+id/appName"
+
+                    <TextView
+                        android:id="@+id/appName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                        tools:text="@string/app_name"/>
+                        tools:text="@string/app_name" />
 
-                    <TextView android:id="@+id/lastUsed"
-                        android:layout_marginStart="2dp"
+                    <TextView
+                        android:id="@+id/lastUsed"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="2dp"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                        tools:text="@string/last_used_template"/>
+                        tools:text="@string/last_used_template" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -65,93 +71,162 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_gravity="center"
                 android:layout_marginStart="12dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="12dp"
-                android:layout_gravity="center">
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal">
+
                 <TextView
-                    android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                    android:text="@string/today"/>
+                    android:layout_weight="1"
+                    android:text="@string/today"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
 
-                <TextView android:id="@+id/usedToday"
+                <TextView
+                    android:id="@+id/usedToday"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                    tools:text="11m 42s"/>
+                    tools:text="11m 42s" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_gravity="center"
                 android:layout_marginStart="12dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="12dp"
-                android:layout_gravity="center">
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal">
+
                 <TextView
-                    android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                    android:text="@string/this_week"/>
+                    android:layout_weight="1"
+                    android:text="@string/this_week"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
 
-                <TextView android:id="@+id/usedThisWeek"
+                <TextView
+                    android:id="@+id/usedThisWeek"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                    tools:text="10h 22m"/>
+                    tools:text="10h 22m" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:layout_marginStart="12dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="12dp"
                 android:layout_marginBottom="10dp"
-                android:layout_marginStart="12dp"
-                android:layout_marginEnd="12dp"
-                android:layout_gravity="center">
+                android:orientation="horizontal">
+
                 <TextView
-                    android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                    android:text="@string/average"/>
+                    android:layout_weight="1"
+                    android:text="@string/average"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
 
-                <TextView android:id="@+id/average"
+                <TextView
+                    android:id="@+id/average"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                    tools:text="2h 20m"/>
+                    tools:text="2h 20m" />
             </LinearLayout>
 
             <TextView
-                android:layout_marginTop="8dp"
-                android:layout_marginStart="12dp"
-                android:layout_marginEnd="12dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="12dp"
+                android:text="@string/time_limit"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                android:textSize="18sp"
-                android:text="@string/sessions"/>
+                android:textSize="18sp" />
 
-            <TextView android:id="@+id/selectBarTextView"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/timeLimitCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                app:cardBackgroundColor="@color/colorAccent"
+                app:contentPadding="4dp"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="4dp">
+
+                    <TextView
+                        android:id="@+id/timeLimitText"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                        android:textColor="@android:color/white"
+                        tools:text="2h 20m" />
+
+                    <ImageView
+                        android:id="@+id/removeTimeLimitButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/outline_close_24"
+                        app:tint="@android:color/white" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/timeLimitButton"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:gravity="center"
+                android:text="@string/set_time_limit"
+                android:textAllCaps="false"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="12dp"
+                android:text="@string/sessions"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/selectBarTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
                 android:layout_marginTop="4dp"
+                android:layout_marginEnd="32dp"
                 android:layout_marginBottom="4dp"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                android:text="@string/select_day_sessions"/>
+                android:gravity="center"
+                android:text="@string/select_day_sessions"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/sessionRecyclerView"
@@ -159,7 +234,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                tools:listitem="@layout/session_rv_item"/>
+                tools:listitem="@layout/session_rv_item" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

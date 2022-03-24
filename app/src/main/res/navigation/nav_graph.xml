@@ -54,4 +54,13 @@
         android:name="com.se7en.screentrack.ui.SettingsFragment"
         tools:layout="@layout/fragment_timeline" />
 
+    <fragment
+        android:id="@+id/timeLimitListFragment"
+        android:name="com.se7en.screentrack.ui.TimeLimitListFragment"
+        tools:layout="@layout/time_limit_list_fragment" >
+        <action
+            android:id="@+id/action_timeLimitListFragment_to_appDetailFragment"
+            app:destination="@id/appDetailFragment" />
+    </fragment>
+
 </navigation>

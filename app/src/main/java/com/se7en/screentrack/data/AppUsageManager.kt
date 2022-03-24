@@ -3,6 +3,9 @@ package com.se7en.screentrack.data
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
 import android.content.Context
+import com.se7en.screentrack.data.database.entity.Day
+import com.se7en.screentrack.data.database.entity.DayStats
+import com.se7en.screentrack.data.database.entity.DayWithDayStats
 import com.se7en.screentrack.models.*
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers

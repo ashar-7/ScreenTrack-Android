@@ -1,4 +1,4 @@
-package com.se7en.screentrack.models
+package com.se7en.screentrack.data.database.entity
 
 import androidx.room.Embedded
 import androidx.room.Relation
