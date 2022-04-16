@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Code/Open Source/Android/ScreenTrack-Android/app/src/main/res/layout/activity_locked_app.xml" value="0.264" />
         <entry key="..\:/Code/Open Source/Android/ScreenTrack-Android/app/src/main/res/layout/fragment_app_detail.xml" value="0.12158054711246201" />
         <entry key="..\:/Code/Open Source/Android/ScreenTrack-Android/app/src/main/res/layout/fragment_settings.xml" value="0.22554347826086957" />
         <entry key="..\:/Code/Open Source/Android/ScreenTrack-Android/app/src/main/res/layout/fragment_usage_list.xml" value="0.22554347826086957" />

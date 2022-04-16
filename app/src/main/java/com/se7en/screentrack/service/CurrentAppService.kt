@@ -2,6 +2,7 @@ package com.se7en.screentrack.service
 
 import android.accessibilityservice.AccessibilityService
 import android.content.ComponentName
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.util.Log
@@ -9,9 +10,11 @@ import android.view.accessibility.AccessibilityEvent
 import android.widget.Toast
 import com.se7en.screentrack.repository.HomeRepository
 import com.se7en.screentrack.repository.TimeLimitRepository
+import com.se7en.screentrack.ui.LockedAppActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
+import org.threeten.bp.Duration
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -51,11 +54,9 @@ class CurrentAppService : AccessibilityService() {
                         serviceScope.launch {
                             if (isTimeLimitExceeded(currentFocusedPackage)) {
                                 withContext(Dispatchers.Main) {
-                                    Toast.makeText(
-                                        applicationContext,
-                                        "Time Limit Exceeded",
-                                        Toast.LENGTH_LONG
-                                    ).show()
+                                    val intent = Intent(this@CurrentAppService, LockedAppActivity::class.java)
+                                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                    startActivity(intent)
                                 }
                             }
                         }
@@ -70,7 +71,12 @@ class CurrentAppService : AccessibilityService() {
         val todayData = usageRepository.getTodayUsageData().first()
         val usage = todayData.usageList.find { it.app.packageName == timeLimit?.packageName }
         return if (timeLimit != null && usage != null) {
-            usage.totalTime > (timeLimit.hour + timeLimit.minute)
+            val totalTime = Duration.ofMillis(usage.totalTime)
+            val hours = totalTime.toHours()
+            totalTime.minusHours(hours)
+            val minutes = totalTime.toMinutes()
+            println("h: $hours, m: $minutes : lH: ${timeLimit.hour} lM: ${timeLimit.minute}")
+            (hours + minutes) > (timeLimit.hour + timeLimit.minute)
         } else false
     }
 

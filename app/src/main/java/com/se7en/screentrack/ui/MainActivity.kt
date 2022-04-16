@@ -98,8 +98,8 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
 
     private fun promptServiceOff() {
         MaterialAlertDialogBuilder(this).apply {
-            setTitle("Title")
-            setMessage("Message")
+            setTitle("Enable Time Limit Service")
+            setMessage("Time Limit Service is required to run the app")
             setPositiveButton("Enable") { _, _ ->
                 val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
