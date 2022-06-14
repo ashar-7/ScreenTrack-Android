@@ -65,31 +65,42 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     ) {
         when (destination.id) {
             R.id.homeFragment -> {
+                supportActionBar?.show()
                 toolbar_title.text = getString(R.string.home)
                 bottomNav.visibility = View.VISIBLE
             }
 
             R.id.timelineFragment -> {
+                supportActionBar?.show()
                 toolbar_title.text = getString(R.string.timeline)
                 bottomNav.visibility = View.VISIBLE
             }
 
             R.id.timeLimitListFragment -> {
+                supportActionBar?.show()
                 toolbar_title.text = getString(R.string.time_limits)
                 bottomNav.visibility = View.VISIBLE
             }
 
             R.id.settingsFragment -> {
+                supportActionBar?.show()
                 toolbar_title.text = getString(R.string.settings)
                 bottomNav.visibility = View.VISIBLE
             }
 
             R.id.permissionFragment -> {
+                supportActionBar?.show()
                 toolbar_title.text = getString(R.string.app_name)
                 bottomNav.visibility = View.GONE
             }
 
+            R.id.authFragment -> {
+                supportActionBar?.hide()
+                bottomNav.visibility = View.GONE
+            }
+
             R.id.appDetailFragment -> {
+                supportActionBar?.show()
                 toolbar_title.text = ""
                 bottomNav.visibility = View.GONE
             }

@@ -22,4 +22,6 @@
     <string name="time_limit">Time Limit</string>
     <string name="time_limits">Time Limits</string>
     <string name="time_limit_exceeded_message">You have exceeded time limit for this app</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

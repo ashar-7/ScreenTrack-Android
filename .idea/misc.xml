@@ -5,10 +5,15 @@
       <map>
         <entry key="..\:/Code/Open Source/Android/ScreenTrack-Android/app/src/main/res/layout/activity_locked_app.xml" value="0.264" />
         <entry key="..\:/Code/Open Source/Android/ScreenTrack-Android/app/src/main/res/layout/fragment_app_detail.xml" value="0.12158054711246201" />
+        <entry key="..\:/Code/Open Source/Android/ScreenTrack-Android/app/src/main/res/layout/fragment_auth.xml" value="0.22554347826086957" />
+        <entry key="..\:/Code/Open Source/Android/ScreenTrack-Android/app/src/main/res/layout/fragment_permission.xml" value="0.22554347826086957" />
         <entry key="..\:/Code/Open Source/Android/ScreenTrack-Android/app/src/main/res/layout/fragment_settings.xml" value="0.22554347826086957" />
+        <entry key="..\:/Code/Open Source/Android/ScreenTrack-Android/app/src/main/res/layout/fragment_timeline.xml" value="0.22554347826086957" />
         <entry key="..\:/Code/Open Source/Android/ScreenTrack-Android/app/src/main/res/layout/fragment_usage_list.xml" value="0.22554347826086957" />
+        <entry key="..\:/Code/Open Source/Android/ScreenTrack-Android/app/src/main/res/layout/session_rv_item.xml" value="0.22554347826086957" />
         <entry key="..\:/Code/Open Source/Android/ScreenTrack-Android/app/src/main/res/layout/time_limit_list_fragment.xml" value="0.22554347826086957" />
         <entry key="..\:/Code/Open Source/Android/ScreenTrack-Android/app/src/main/res/layout/time_limit_rv_item.xml" value="0.2" />
+        <entry key="..\:/Code/Open Source/Android/ScreenTrack-Android/app/src/main/res/layout/timeline_session_rv_item.xml" value="0.22554347826086957" />
         <entry key="..\:/Code/Open Source/Android/ScreenTrack-Android/app/src/main/res/layout/usage_rv_item.xml" value="0.22554347826086957" />
         <entry key="..\:/Code/Open Source/Android/ScreenTrack-Android/app/src/main/res/menu/bottom_nav_menu.xml" value="0.25" />
         <entry key="..\:/Code/Open Source/Android/ScreenTrack-Android/app/src/main/res/xml/service.xml" value="0.22554347826086957" />
